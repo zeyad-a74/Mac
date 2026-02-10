@@ -1,0 +1,37 @@
+name: macOS RustDesk Remote
+
+on: workflow_dispatch
+
+jobs:
+  rustdesk-mac:
+    runs-on: macos-latest
+
+    steps:
+      - name: Download & Install RustDesk macOS
+        run: |
+          curl -L -o rustdesk.dmg https://github.com/rustdesk/rustdesk/releases/download/1.4.5/rustdesk-1.4.5-x86_64.dmg
+          hdiutil attach rustdesk.dmg -nobrowse -mountpoint /Volumes/RustDesk
+          cp -R "/Volumes/RustDesk/RustDesk.app" /Applications/
+          hdiutil detach "/Volumes/RustDesk"
+
+      - name: Start RustDesk & Show Connection Info
+        run: |
+          FIXED_PASS="MacOS-Test44#"
+          
+          echo "جاري تشغيل RustDesk..."
+          /Applications/RustDesk.app/Contents/MacOS/RustDesk --password "$FIXED_PASS" &
+          
+          sleep 20
+          
+          ID=$(/Applications/RustDesk.app/Contents/MacOS/RustDesk --get-id 2>/dev/null || echo "ID غير متوفر - شوف الlogs")
+          
+          echo ""
+          echo "===================================================="
+          echo "RustDesk ID       : $ID"
+          echo "Password          : $FIXED_PASS"
+          echo "اتصل دلوقتي من أي جهاز (موبايل، ويندوز، ماك)"
+          echo "===================================================="
+          echo ""
+          
+          echo "الجلسة شغالة حتى \~6 ساعات max (حد GitHub)"
+          sleep 21600

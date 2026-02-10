@@ -1,0 +1,24 @@
+name: Open Safari on macOS Runner
+
+on: workflow_dispatch
+
+jobs:
+  open-safari:
+    runs-on: macos-latest
+
+    steps:
+      - name: Launch Safari
+        run: |
+          echo "جاري فتح Safari..."
+          open -a Safari "https://www.google.com" || { echo "فشل في فتح Safari!"; exit 1; }
+          
+          echo "Safari تم فتحه بنجاح."
+          echo "الرابط الافتراضي: https://www.google.com"
+          echo "ملاحظة: الـ runner headless، فمش هتشوف الشاشة مباشرة بدون remote desktop."
+
+      - name: انتظر شوية عشان Safari يفتح ويحمل (اختياري)
+        run: sleep 120  # 2 دقايق، ممكن تزود لو عايز
+
+      - name: Keep the runner alive (max \~6 ساعات)
+        if: always()
+        run: sleep 21600
